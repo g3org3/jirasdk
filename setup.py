@@ -6,4 +6,9 @@ _ = setup(
     packages=find_packages(),
     python_requires=">=3.11",
     install_requires=["requests"],
+    entry_points={
+        "console_scripts": [
+            "jira=jirasdk.cli:main",
+        ],
+    },
 )
