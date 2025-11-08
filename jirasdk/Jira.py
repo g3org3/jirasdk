@@ -54,13 +54,14 @@ class Jira:
     headers: dict[str, str]
 
     # fmt:off
-    def __init__(self, host: str = "", api_key: str | None = None, verify_ssl: bool = True):
+    def __init__(self, host: str | None = None, api_key: str | None = None, verify_ssl: bool = True):
     # fmt:on
-        log.debug(
-            f"Init jira client (host={host}, api_key={api_key}, verify_ssl={verify_ssl})"
-        )
-        self.base_url = f"https://{host}/rest"
+        _host = host or environ["JIRA_HOST"]
         self.api_key = api_key or environ["JIRA_API_KEY"]
+        log.info(
+            f"Init jira client (host={_host}, api_key={self.api_key}, verify_ssl={verify_ssl})"
+        )
+        self.base_url = f"https://{_host}/rest"
         self.verify_ssl = verify_ssl
         self.headers = {
             "Authorization": f"Bearer {self.api_key}",
