@@ -1,6 +1,7 @@
 import argparse
 import urllib3
 
+from tabulate import tabulate
 from jirasdk import Jira
 
 urllib3.disable_warnings()
@@ -79,8 +80,7 @@ def main():
     elif args.command == "get-sprints":
         sprints = jira.get_jira_sprints(args.board_id)
         print("\nSprints")
-        for sprint in sprints:
-            print(sprint)
+        print(tabulate(sprints, headers="keys"))
     elif args.command == "get-ticket":
         jira.get_jira_ticket(args.ticket_key)
     elif args.command == "update-status":

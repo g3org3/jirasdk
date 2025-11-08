@@ -5,7 +5,7 @@ _ = setup(
     verison="0.0.1",
     packages=find_packages(),
     python_requires=">=3.9",
-    install_requires=["requests"],
+    install_requires=["requests", "tabulate"],
     entry_points={
         "console_scripts": [
             "jira=jirasdk.cli:main",
