@@ -69,7 +69,6 @@ class Jira:
         }
 
     def jira_request(self, method: str, endpoint: str, json=None, params=None):
-
         url = f"{self.base_url}/{endpoint}"
         log.info(f"{method} {endpoint}", "API")
         res = r.request(
@@ -80,11 +79,8 @@ class Jira:
             headers=self.headers,
             verify=self.verify_ssl,
         )
-        if res.status_code > 299:
-            log.error(f"{res.status_code} {method} {endpoint} FAILED")
-            log.error(f"reason={res.text}")
-            raise Exception("Jira request failed")
-        log.info(f"{res.status_code}", "API")
+        res.raise_for_status()
+        log.info(f"{res.status_code} {endpoint}")
         return res.json()
 
     def jira_request_get_all_pages(self, endpoint: str, params: dict[str, str] = {}):
