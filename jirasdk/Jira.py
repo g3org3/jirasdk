@@ -110,8 +110,7 @@ class Jira:
         while payload and not is_last:
             startAt += 50
             params["startAt"] = str(startAt)
-            res = self.jira_request("GET", endpoint, params=params)
-            payload = res.json()
+            payload = self.jira_request("GET", endpoint, params=params)
             items += payload["issues"]
             is_last = int(payload["maxResults"]) + int(payload["startAt"]) >= int(
                 payload["total"]
@@ -172,8 +171,7 @@ class Jira:
 
     def get_jira_ticket(self, ticket_key: str):
         log.info(f"get_jira_ticket({ticket_key})")
-        res = self.jira_request("GET", f"api/2/issue/{ticket_key}")
-        payload = res.json()
+        payload = self.jira_request("GET", f"api/2/issue/{ticket_key}")
         fields = payload.get("fields")
 
         github_desc = json.loads(
@@ -232,8 +230,7 @@ class Jira:
             ticket_key: the jira issue key, it can be something like CFCCON-, PID-, CLPDEF-, IFSDEVOPS-
         """
         log.info(f"get_jira_ticket_status_list({ticket_key})")
-        res = self.jira_request("GET", f"api/2/issue/{ticket_key}/transitions")
-        payload = res.json()
+        payload = self.jira_request("GET", f"api/2/issue/{ticket_key}/transitions")
         return [
             {"status_id": t.get("id"), "status_name": t.get("name")}
             for t in payload.get("transitions")
@@ -246,8 +243,8 @@ class Jira:
     def get_jira_ticket_github_pull_requests(self, issue_id: int):
         log.info(f"get_jira_ticket_github_pull_requests({issue_id})")
         query_string = f"issueId={issue_id}&applicationType=githube&dataType=pullrequest"
-        res = self.jira_request("GET", f"dev-status/1.0/issue/detail?{query_string}")
-        payload = res.json().get("detail")[0]
+        payload = self.jira_request("GET", f"dev-status/1.0/issue/detail?{query_string}")
+        payload = payload.get("detail")[0]
         branches = payload.get("branches")
         pullrequests = payload.get("pullRequests")
         data = {
@@ -288,7 +285,5 @@ class Jira:
         }
         if epic_id:
             payload["fields"]["customfield_10001"] = epic_id
-        res = self.jira_request("POST", "api/2/issue", json=payload)
-        data = res.json()
-
+        data = self.jira_request("POST", "api/2/issue", json=payload)
         return data

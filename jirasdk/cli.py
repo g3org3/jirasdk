@@ -1,5 +1,7 @@
+#!/usr/bin/env python
 import argparse
 import urllib3
+import json
 
 from tabulate import tabulate
 from jirasdk import Jira
@@ -72,9 +74,13 @@ def main():
     jira = Jira(verify_ssl=False)
 
     if args.command == "search":
-        jira.search_jira_tickets(args.jql)
+        tickets = jira.search_jira_tickets(args.jql)
+        tickets = [{"key": t["key"], "status": t["fields"]["status"]["name"], "summary": t["fields"]["summary"]} for t in tickets]
+        print(tabulate(tickets, headers="keys"))
     elif args.command == "get-epic-tickets":
-        jira.get_all_tickets_from_epic(args.project_id, args.epic_key)
+        tickets = jira.get_all_tickets_from_epic(args.project_id, args.epic_key, include_done_tickets=True)
+        tickets = [{"key": t["key"], "status": t["fields"]["status"]["name"], "summary": t["fields"]["summary"]} for t in tickets]
+        print(tabulate(tickets, headers="keys"))
     elif args.command == "comment":
         jira.post_comment_in_jira_ticket(args.ticket_key, args.comment)
     elif args.command == "get-sprints":
@@ -82,17 +88,21 @@ def main():
         print("\nSprints")
         print(tabulate(sprints, headers="keys"))
     elif args.command == "get-ticket":
-        jira.get_jira_ticket(args.ticket_key)
+        ticket = jira.get_jira_ticket(args.ticket_key)
+        print(json.dumps(ticket, indent=2))
     elif args.command == "update-status":
         jira.update_jira_ticket_status(args.ticket_key, args.status)
     elif args.command == "get-status-list":
-        jira.get_jira_ticket_status_list(args.ticket_key)
+        status = jira.get_jira_ticket_status_list(args.ticket_key)
+        print(tabulate(status, headers="keys"))
     elif args.command == "assign":
         jira.assign_user_to_ticket(args.ticket_key, args.username)
     elif args.command == "get-prs":
-        jira.get_jira_ticket_github_pull_requests(args.ticket_key)
+        prs = jira.get_jira_ticket_github_pull_requests(args.ticket_key)
+        print(json.dumps(prs, indent=2))
     elif args.command == "get-epics":
-        jira.get_all_epics(args.board_id)
+        epics = jira.get_all_epics(args.board_id)
+        print(tabulate(epics, headers="keys"))
     elif args.command == "create-ticket":
         print("todo")
         # jira.create_jira_ticket()
