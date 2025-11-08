@@ -4,7 +4,7 @@ _ = setup(
     name="jirasdk",
     verison="0.0.1",
     packages=find_packages(),
-    python_requires=">=3.11",
+    python_requires=">=3.9",
     install_requires=["requests"],
     entry_points={
         "console_scripts": [
