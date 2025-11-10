@@ -60,7 +60,7 @@ def main():
     pr_parser = subparsers.add_parser(
         "get-prs", help="Get GitHub pull requests for a ticket"
     )
-    pr_parser.add_argument("ticket_key", help="Ticket key")
+    pr_parser.add_argument("ticket_id", help="Ticket id (number)")
 
     # get-epics
     epics_parser = subparsers.add_parser("get-epics", help="Get all epics for a board")
